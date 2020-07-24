@@ -17,19 +17,11 @@
 # under the License.
 #
 
-ARG GO_VERSION=golang:1.12
-FROM apachepulsar/pulsar:latest as pulsar
-FROM $GO_VERSION as go
+FROM golang:1.14
 
-RUN apt-get update && apt-get install -y openjdk-11-jre-headless
+WORKDIR /go/src/github.com/apache/pulsar-client-go
+COPY . .
 
-COPY --from=pulsar /pulsar /pulsar
+RUN go get -d -v ./...
+RUN go install -v ./...
 
-### Add test scripts
-COPY integration-tests/certs /pulsar/certs
-COPY integration-tests/tokens /pulsar/tokens
-COPY integration-tests/standalone.conf /pulsar/conf
-COPY integration-tests/client.conf /pulsar/conf
-COPY pulsar-test-service-start.sh /pulsar/bin
-COPY pulsar-test-service-stop.sh /pulsar/bin
-COPY run-ci.sh /pulsar/bin

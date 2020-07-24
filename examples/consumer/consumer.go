@@ -19,14 +19,20 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 
 	"github.com/apache/pulsar-client-go/pulsar"
 )
 
+
 func main() {
-	client, err := pulsar.NewClient(pulsar.ClientOptions{URL: "pulsar://localhost:6650"})
+	var pulsarURL string 
+	flag.StringVar(&pulsarURL, "url", "pulsar://localhost:6650", "url to pulsar server")
+	flag.Parse()
+	
+	client, err := pulsar.NewClient(pulsar.ClientOptions{URL: pulsarURL})
 	if err != nil {
 		log.Fatal(err)
 	}
